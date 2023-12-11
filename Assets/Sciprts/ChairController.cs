@@ -39,4 +39,21 @@ public class ChairController : MonoBehaviour
     {
         isMoving = false; // 움직임 상태를 비활성화
     }
+
+    // 아래에 추가된 메서드
+    public void StopMoveUp()
+    {
+        if (Input.GetButtonUp("Vertical"))
+        {
+            StopMove();
+        }
+    }
+
+    public void StopMoveDown()
+    {
+        if (Input.GetButtonUp("Vertical"))
+        {
+            StopMove();
+        }
+    }
 }
