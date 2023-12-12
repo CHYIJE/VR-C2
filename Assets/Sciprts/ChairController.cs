@@ -1,59 +1,53 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ChairController : MonoBehaviour
 {
-    private bool isMoving = false; // 의자의 움직임 상태
-    public float moveSpeed = 1f; // 의자의 움직임 속도
-    public float moveDistance = 1f; // 의자의 움직임 거리
+    private float moveSpeed = 5f; // 이동 속도
+    private float maxYPosition = 0.9f; // 움직일 수 있는 최대 Y 좌표 값
+    private float minYPosition = 0.45f; // 움직일 수 있는 최소 Y 좌표 값
+    private float targetYPosition; // 목표 Y 좌표 값
+    private float smoothTime = 0.05f; // 부드러운 이동을 위한 시간 값
+
+    void Awake()
+    {
+        // 처음에 의자를 최소 Y 좌표로 설정
+        transform.position = new Vector3(transform.position.x, minYPosition, transform.position.z);
+        targetYPosition = minYPosition;
+    }
 
     void Update()
     {
-        if (isMoving)
+        // Oculus 컨트롤러의 A 버튼이 눌렸을 때
+        if (OVRInput.GetDown(OVRInput.Button.Two))
         {
-            // 움직임이 활성화된 상태에서 처리할 로직을 여기에 추가
-            Move();
+            MoveUp();
         }
-    }
 
-    void Move()
-    {
-        // 의자를 위 아래로 움직이는 로직을 추가합니다.
-        float translation = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
-        float newPosition = Mathf.Clamp(transform.position.y + translation, transform.position.y - moveDistance, transform.position.y + moveDistance);
-        transform.position = new Vector3(transform.position.x, newPosition, transform.position.z);
-    }
-
-    public void StartMoveUp()
-    {
-        isMoving = true; // 움직임 상태를 활성화
-    }
-
-    public void StartMoveDown()
-    {
-        isMoving = true; // 움직임 상태를 활성화
-    }
-
-    public void StopMove()
-    {
-        isMoving = false; // 움직임 상태를 비활성화
-    }
-
-    // 아래에 추가된 메서드
-    public void StopMoveUp()
-    {
-        if (Input.GetButtonUp("Vertical"))
+        // Oculus 컨트롤러의 B 버튼이 눌렸을 때
+        if (OVRInput.GetDown(OVRInput.Button.One))
         {
-            StopMove();
+            MoveDown();
         }
+
+        // 서서히 움직임
+        transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x, targetYPosition, transform.position.z), smoothTime);
     }
 
-    public void StopMoveDown()
+    void MoveUp()
     {
-        if (Input.GetButtonUp("Vertical"))
-        {
-            StopMove();
-        }
+        // 목표 위치를 최대 Y 좌표로 설정
+        targetYPosition = maxYPosition;
+    }
+
+    void MoveDown()
+    {
+        // 목표 위치를 최소 Y 좌표로 설정
+        targetYPosition = minYPosition;
+    }
+
+    void MoveToNewPosition(float targetYPosition)
+    {
+        // 특정 위치로 이동
+        targetYPosition = 1.36F;
     }
 }
